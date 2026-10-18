@@ -5,7 +5,8 @@
 ## 当前配置
 
 - 品牌：T9 国际
-- 线路与备用网址：`https://tian909.com`
+- 测速线路：`tian901.com`、`tian902.com`、`tian903.com`、`tian905.com`、`tian906.com`、`tian907.com`、`tian908.com`、`tian909.com`
+- 备用网址：`https://tian909.com`
 - 永久收藏地址：部署后自动显示当前 GitHub Pages URL
 - 测速资源：各线路根目录的 `/t9-logo.png`
 
