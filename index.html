@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="referrer" content="no-referrer">
     <meta name="theme-color" content="#6366f1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="T9 国际">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./icon-192.png">
     <title>T9 国际 · 线路优选入口</title>
     <style>
         /* 零外部依赖：系统字体 + 内联 SVG，避免国内被墙的 Google Fonts / CDN 拖慢首屏 */
@@ -252,7 +258,7 @@
 
         <div class="tips">
             💡 <b>建议收藏本页</b>：电脑按 <b>Ctrl+D</b>，手机点浏览器分享 → <b>添加到主屏幕</b>。换线路随时回来自动重测。<br>
-            本页线路均为<b>国内可直接访问</b>地址；某条打不开时，点上方<b>最快线路</b>即可。
+            <b>首次成功打开后会保存本地副本</b>；以后即使断网，也能查看已缓存的线路页。某条打不开时，可尝试上方其他入口。
         </div>
 
         <footer>© 2026 T9 国际 · 本页内容仅供参考，请遵守当地法律法规</footer>
@@ -565,6 +571,13 @@
                 heroMeta.textContent = '当前浏览器较旧，未自动测速，可直接点上方进入';
             }
         })();
+
+        // 首次在线访问后缓存本页；之后优先显示本地副本，并在后台获取更新。
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('./sw.js').catch(function () {});
+            });
+        }
     </script>
 </body>
 </html>
