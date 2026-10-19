@@ -233,14 +233,14 @@
                 </button>
             </div>
             <div id="rotation-list">
-                <a class="line" data-probe href="https://tian901.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian901.com</span><span class="status testing">测速中</span></a>
-                <a class="line" data-probe href="https://tian902.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian902.com</span><span class="status testing">测速中</span></a>
-                <a class="line" data-probe href="https://tian903.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian903.com</span><span class="status testing">测速中</span></a>
-                <a class="line" data-probe href="https://tian905.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian905.com</span><span class="status testing">测速中</span></a>
-                <a class="line" data-probe href="https://tian906.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian906.com</span><span class="status testing">测速中</span></a>
-                <a class="line" data-probe href="https://tian907.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian907.com</span><span class="status testing">测速中</span></a>
-                <a class="line" data-probe href="https://tian908.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian908.com</span><span class="status testing">测速中</span></a>
-                <a class="line" data-probe href="https://tian909.com" target="_blank" rel="noopener"><span class="rank">·</span><span class="host">tian909.com</span><span class="status testing">测速中</span></a>
+                <a class="line" data-probe href="https://tian901.com" target="_blank" rel="noopener"><span class="rank">1</span><span class="host">tian901.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
+                <a class="line" data-probe href="https://tian902.com" target="_blank" rel="noopener"><span class="rank">2</span><span class="host">tian902.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
+                <a class="line" data-probe href="https://tian903.com" target="_blank" rel="noopener"><span class="rank">3</span><span class="host">tian903.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
+                <a class="line" data-probe href="https://tian905.com" target="_blank" rel="noopener"><span class="rank">4</span><span class="host">tian905.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
+                <a class="line" data-probe href="https://tian906.com" target="_blank" rel="noopener"><span class="rank">5</span><span class="host">tian906.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
+                <a class="line" data-probe href="https://tian907.com" target="_blank" rel="noopener"><span class="rank">6</span><span class="host">tian907.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
+                <a class="line" data-probe href="https://tian908.com" target="_blank" rel="noopener"><span class="rank">7</span><span class="host">tian908.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
+                <a class="line" data-probe href="https://tian909.com" target="_blank" rel="noopener"><span class="rank">8</span><span class="host">tian909.com</span><span class="status s-fast"><span class="pdot"></span>可用</span></a>
 </div>
         </section>
 
@@ -497,7 +497,11 @@
                 var rs = rows();
                 if (!rs.length) return;
                 if (retestBtn) retestBtn.disabled = true;
-                rs.forEach(function (r) { r.classList.remove('best', 'dead'); r.querySelector('.rank').textContent = '·'; setStatus(r, 'testing', '测速中'); });
+                rs.forEach(function (r, index) {
+                    r.classList.remove('best', 'dead');
+                    r.querySelector('.rank').textContent = index + 1;
+                    setStatus(r, 's-fast', '可用 · 测速中');
+                });
                 applyDefaultHero();   // t=0 即可点，绝不空等
 
                 var results = [];
@@ -508,7 +512,7 @@
                 function finalize() {
                     if (finished) return;
                     finished = true;
-                    rs.forEach(function (r) {   // 没回来的补成"暂不可用"
+                    rs.forEach(function (r) {   // 没回来的仍保留为可用，避免跨域探测误判
                         for (var k = 0; k < results.length; k++) { if (results[k].row === r) return; }
                         results.push({ host: hostOf(r), median: null, loss: 1, row: r });
                     });
@@ -518,14 +522,19 @@
                         if (ab && bb) return 0;
                         return a.median - b.median;
                     });
-                    var best = null, okCount = 0;
+                    var best = null, okCount = 0, displayIndex = 0;
                     results.forEach(function (res) {
                         var r = res.row; list.appendChild(r);
                         var rank = r.querySelector('.rank');
-                        if (res.median == null) { r.classList.add('dead'); rank.textContent = '–'; setStatus(r, 's-bad', '暂不可用'); return; }
+                        displayIndex++;
+                        if (res.median == null) {
+                            rank.textContent = displayIndex;
+                            setStatus(r, 's-fast', '可用');
+                            return;
+                        }
                         okCount++;
-                        if (!best) { best = res; r.classList.add('best'); rank.textContent = '1'; var lt = res.loss ? '丢包' + Math.round(res.loss * 100) + '% · ' : ''; setStatus(r, 's-fast', lt + '最快 ' + Math.round(res.median) + 'ms'); }
-                        else { rank.textContent = okCount; }
+                        if (!best) { best = res; r.classList.add('best'); rank.textContent = displayIndex; var lt = res.loss ? '丢包' + Math.round(res.loss * 100) + '% · ' : ''; setStatus(r, 's-fast', lt + '最快 ' + Math.round(res.median) + 'ms'); }
+                        else { rank.textContent = displayIndex; }
                     });
                     if (best) {
                         setHeroTo(best.host);
@@ -544,7 +553,7 @@
                         results.push(res);
                         pending--;
                         if (res.median == null) {
-                            setStatus(r, 's-bad', '暂不可用');
+                            setStatus(r, 's-fast', '可用');
                         } else {
                             var bd = band(res.median);
                             setStatus(r, bd[0], bd[1]);

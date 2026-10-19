@@ -1,4 +1,4 @@
-const CACHE = 't9-route-selector-v1';
+const CACHE = 't9-route-selector-v2';
 const ASSETS = [
   './',
   './index.html',
